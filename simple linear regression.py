@@ -1,58 +1,43 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Fri May 15 18:53:14 2020
-
-@author: HP
-"""
+@author: sobhangini
 # importing the libraries
 import numpy as np 
 import pandas as pd
 import matplotlib.pyplot as plt 
 import os
-print(os.getcwd())#for current location
+print(os.getcwd())
 os.chdir("C:\\Users\\HP\\Downloads")#input csv file location
 
 # input dataset
-dataset= pd.read_csv("VC_Startups.csv")
-x = dataset.iloc[:,:-1].values
-y = dataset.iloc[:,4].values
-# Encoding numerical data
-from sklearn.preprocessing import LabelEncoder , OneHotEncoder
-from sklearn.compose import ColumnTransformer
-labelencoder_x=LabelEncoder()
-x[:,3]=labelencoder_x.fit_transform(x[:,3])
-from sklearn.compose import ColumnTransformer
-ct = ColumnTransformer([('encoder', OneHotEncoder(), [3])], remainder='passthrough')
-x = np.array(ct.fit_transform(x), dtype=np.float)
+dataset= pd.read_csv("Salary_Data.csv")
+print(dataset)
+X= dataset.iloc[:,:-1].values
+y= dataset.iloc[:,1].values
 
 
-# Avoiding the dummy variable trap 
-x= x[:,1:]
-# Splitting data into training set and testing set
-from sklearn.model_selection import train_test_split
-x_train,x_test,y_train,y_test=train_test_split(x,y,test_size=0.20,random_state=0)
-# Fitting the multiple linear regression to the training set
+# Spliting the data into training set and test set
+from sklearn.model_selection import train_test_split 
+X_train,X_test,y_train,y_test= train_test_split(X,y, test_size=1/3, random_state=0 )
+
+#fitting simple linear regression to training set
+
 from sklearn.linear_model import LinearRegression
 regressor= LinearRegression()
-regressor.fit(x_train,y_train)
-#Predicting the test set results
-y_pred=regressor.predict(x_test)
-# Building the optimal model using Backward elimination
-import statsmodels.api as sm
-x=np.append(arr=np.ones((50,1)).astype(int),values=x,axis=1)
-x_opt=x[:, [0, 1, 2, 3,4]]
-regressor_ols=sm.OLS(endog=y,exog=x_opt).fit()
-regressor_ols.summary()
-x_opt=x[:, [0, 1, 2, 4]]
-regressor_ols=sm.OLS(endog=y,exog=x_opt).fit()
-regressor_ols.summary()
-x_opt=x[:, [0, 2,4]]
-regressor_ols=sm.OLS(endog=y,exog=x_opt).fit()
-regressor_ols.summary()
-x_opt=x[:, [0, 2]]
-regressor_ols=sm.OLS(endog=y,exog=x_opt).fit()
-regressor_ols.summary()
+regressor.fit(X_train,y_train)
+y_pred=regressor.predict(X_test)
 
+# Visualizing the training set results
+ 
+plt.scatter(X_train,y_train, color='red')
+plt.plot(X_train, regressor.predict(X_train),color='blue')
+plt.title('Salary vs Experience ( Training set)')
+plt.xlabel('Experience')
+plt.ylabel('Salary')
+plt.show()
 
-
-
+# Visualizing the test set results
+plt.scatter(X_test,y_test,color='magenta')
+plt.plot(X_train, regressor.predict(X_train),color='blue')
+plt.title('Salary vs experience (Test set)')
+plt.xlabel('Experience')
+plt.ylabel('Salary')
+plt.show()
