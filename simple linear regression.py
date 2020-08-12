@@ -9,8 +9,8 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt 
 import os
-print(os.getcwd())
-os.chdir("C:\\Users\\HP\\Downloads")
+print(os.getcwd())#for current location
+os.chdir("C:\\Users\\HP\\Downloads")#input csv file location
 
 # input dataset
 dataset= pd.read_csv("VC_Startups.csv")
